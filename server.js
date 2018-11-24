@@ -1,9 +1,12 @@
 const mongoose = require('mongoose'),
     express = require('express'),
-    route = require('./lib/route/index')
+    //route = require('./lib/route/index')
     parser = require('body-parser'),
     app = express(),
-    dbconfig = require('./lib/config/config');
+    helper = require('./lib/route/index'),
+    dbconfig = require('./lib/config/config'),
+    errorHandler = require('./lib/modules/errorlog/errorcontroller');
+
     
 app.use(parser.json());
 
@@ -19,5 +22,10 @@ mongoose.connect(dbconfig.url,{
     process.exit();
 });
 
-app.use('/api/', route);
+console.log('Here Ia m');
+helper.init(app);
+app.use(function(err, req, res, next){
+    errorHandler.create(err,req, res,next);
+})
+//app.use('/api/', route);
 app.listen(8000);
